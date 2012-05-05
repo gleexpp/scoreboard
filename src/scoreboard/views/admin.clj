@@ -7,8 +7,46 @@
   (:require [scoreboard.models.institute :as institute]
             [scoreboard.models.player :as player]))
 
+(deftemplate base "scoreboard/views/layout.html"
+  [{:keys [body]}]
+  [:#main] (content body))
+
+(defsnippet player-form "scoreboard/views/_player.html" [:form]
+  [{:keys [data]}]
+  [:form] (set-attr :action (str "/players/" (:lottery data)))
+  [[:#college :option]] (clone-for [institute (:institutes data)]
+                                  (do->
+                                   (content (:name institute))
+                                   (set-attr :value (:id institute))))
+  [[:option (attr= :value (:lottery data))]] (set-attr :selected true)
+  [[:option (attr= :value (:institute_id data))]] (set-attr :selected true)
+  [:#seq] (set-attr :value (:lottery data))
+  [:#username] (set-attr :value (:name data)))
+
+
 (defpage "/" []
-  (redirect "/player/add"))
+  (redirect "/players"))
+
+(defpage "/players/new" []
+  (let [institutes (institute/all)
+        quantity (count institutes)
+        page (html-resource "scoreboard/views/_user_form.html")]
+    (main
+     (at page
+         [:#college :option]
+         (clone-for [i (range quantity)]
+                    (do->
+                     (content (:name (nth institutes i)))
+                     (set-attr :value (:id (nth institutes i)))))
+
+         [:#seq :option]
+         (clone-for [i (range 1 21)]
+                    (content (str i))))
+     [:.form-horizontal])))
+
+(defpage [:post "/players"] {:as player}
+  (player/save-player player)
+  (redirect "/players"))
 
 (defpage "/players" []
   (let [players (player/all-players)
@@ -28,7 +66,7 @@
                     (content (:institute player))
                     [:.category]
                     (content (:category player)))
-         ))))
+         )[:.table])))
 
 (defpage [:put "/players/:id"] {:keys [id] :as entity}
   (info entity)
@@ -90,7 +128,19 @@
   (redirect (str "/players/" (:seq player))))
 
 
+(defpage "/ranks" []
+  (let [page (html-resource "scoreboard/views/_rank.html")]
+    (main
+     page
+     [:.table])))
 
+(defpage "/awards" []
+  (let [page (html-resource "scoreboard/views/_awards.html")]
+    (main page [:.table])))
+
+(defpage "/scores" []
+  (let [page (html-resource "scoreboard/views/_scores.html")]
+    (main page [:.table])))
 
 
 
