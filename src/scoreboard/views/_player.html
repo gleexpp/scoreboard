@@ -1,0 +1,42 @@
+<form class="form-horizontal" action="/players/" method="post">
+  <input name="_method" value="PUT" type="hidden"/>
+  <fieldset>
+    <legend>
+      选手信息
+    </legend>
+    <div class="control-group">
+      <label class="control-label" for="seq">选手号</label>
+      <div class="controls">
+	<input type="text" id="seq" name="seq" disabled="true"/>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="username">姓名</label>
+      <div class="controls">
+	<input type="text" id="username" name="username"/>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="college">学院</label>
+      <div class="controls">
+	<select id="college" name="college">
+          <option></option>
+        </select>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="category">参赛类别</label>
+      <div class="controls">
+	<select id="category" name="category">
+	  <option value="理论">理论</option>
+	  <option value="无菌技术基本操作">无菌技术基本操作</option>
+	  <option value="皮内注射（卡介苗接种）">皮内注射（卡介苗接种）</option>
+	  <option value="单人徒手心肺复苏">单人徒手心肺复苏</option>
+	</select>
+      </div>
+    </div>					
+    <div class="form-actions">
+      <input type="submit" class="btn" value="更新"/>
+    </div>
+  </fieldset>
+</form>
