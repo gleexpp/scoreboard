@@ -39,6 +39,9 @@
          [(attr= :value (:institute_id pl))]
          (set-attr :selected true)
 
+         [:#director]
+         (set-attr :value (:directed_by pl))
+
          [:#username]
          (set-attr :value (:name pl)))
      [:.form-horizontal])))

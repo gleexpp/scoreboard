@@ -70,8 +70,8 @@
                     (content (:name player))
                     [:.college]
                     (content (:institute player))
-                    [:.category]
-                    (content (:category player)))
+                    [:.director]
+                    (content (:director player)))
          ) [:.table])))
 
 (defpage [:put "/players/:id"] {:keys [id] :as entity}
@@ -217,7 +217,7 @@
           (do
             (session/put! :role "admin")
             (redirect "/players"))
-          (redirect "/scores"))))))
+          (redirect "/players"))))))
 
 (pre-route "/*" {}
            (let [uri (:uri (request/ring-request))]

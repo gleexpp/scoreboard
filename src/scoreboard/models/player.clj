@@ -8,6 +8,7 @@
     (sql/insert-records :players
                         {:name (:username player) 
                          :lottery (:seq player)
+                         :directed_by (:director player)
                          :institute_id (:college player)})))
 
 (defn find-player [player-seq]
@@ -19,7 +20,7 @@
 (defn all-players []
   (sql/with-connection db
     (sql/with-query-results rows
-      ["select p.lottery,p.name,i.name as institute from players p, institutes i where p.institute_id = i.id order by p.lottery"]
+      ["select p.lottery,p.name,i.name as institute,p.directed_by as director from players p, institutes i where p.institute_id = i.id order by p.lottery"]
       (into [] rows))))
 
 (defn update [player]

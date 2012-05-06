@@ -1,6 +1,6 @@
 create table users (id identity, name varchar(100), password varchar(50), is_admin boolean primary key (id));
 create table institutes (id identity, name varchar(100), primary key (id));
-create table players (id identity, name varchar(100), institute_id bigint,primary key (id),foreign key (institute_id) references institutes(id));
+create table players (id identity, name varchar(100), directed_by varchar(100),institute_id bigint,primary key (id),foreign key (institute_id) references institutes(id));
 
 insert into institutes (name) values ('顺德职业技术学院');
 insert into institutes (name) values ('深圳职业技术学院');
