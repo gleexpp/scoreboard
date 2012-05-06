@@ -1,0 +1,41 @@
+<form class="form-horizontal" action="/scores" method="post">
+  <fieldset>
+    <div class="control-group">
+      <label class="control-label" for="seq">选手号</label>
+      <div class="controls">
+	<input type="text" id="seq" name="seq" readonly="true"/>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="username">姓名</label>
+      <div class="controls">
+	<input type="text" id="username" name="username" disabled="true"/>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="college">学院</label>
+      <div class="controls">
+	<select id="college" name="college" disabled="true">
+          <option></option>
+        </select>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="project">竞赛项目</label>
+      <div class="controls">
+	<select id="project" name="project">
+          <option></option>
+        </select>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="college">成绩</label>
+      <div class="controls">
+	<input type="text" id="score" name="score" />
+      </div>
+    </div>
+    <div class="form-actions">
+      <input type="submit" class="btn" value="保存"/>
+    </div>
+  </fieldset>
+</form>

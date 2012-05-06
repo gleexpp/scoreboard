@@ -12,7 +12,7 @@ insert into institutes (name) values ('广州医学院从化学院');
 insert into institutes (name) values ('肇庆医学高等专科学校');
 
 create table projects (id identity, name varchar(100), primary key (id));
-create table scores (id identity, player_id bigint, project_id bigint, score decimal(10,2), primary key (id), foreign key (player_id) references players(id), foreign key (project_id) references projects(id));
+create table scores (id identity, player_id bigint, project_id bigint, score decimal(10,2), primary key (id), foreign key (player_id) references players(lottery), foreign key (project_id) references projects(id));
 create index pl_prj_idx on scores (player_id,project_id);
 
 insert into projects (name) values ('临床案例分析');
