@@ -7,7 +7,9 @@
   (:require [scoreboard.models.institute :as institute]
             [scoreboard.models.player :as player]
             [scoreboard.models.score :as score]
-            [noir.session :as session]))
+            [scoreboard.models.user :as person]
+            [noir.session :as session]
+            [noir.request :as request]))
 
 (deftemplate base "scoreboard/views/layout.html"
   [{:keys [body]}]
@@ -17,9 +19,9 @@
   [{:keys [data]}]
   [:form] (set-attr :action (str "/players/" (:lottery data)))
   [[:#college :option]] (clone-for [institute (:institutes data)]
-                                  (do->
-                                   (content (:name institute))
-                                   (set-attr :value (:id institute))))
+                                   (do->
+                                    (content (:name institute))
+                                    (set-attr :value (:id institute))))
   [[:option (attr= :value (:lottery data))]] (set-attr :selected true)
   [[:option (attr= :value (:institute_id data))]] (set-attr :selected true)
   [:#seq] (set-attr :value (:lottery data))
@@ -181,8 +183,50 @@
     (main page [:.table])))
 
 (defpage "/scores" []
-  (let [page (html-resource "scoreboard/views/_scores.html")]
-    (main page [:.table])))
+  (let [page (html-resource "scoreboard/views/_scores.html")
+        scores (score/get-practice-project-score)]
+    (main
+     (at page
+         [:#scores]
+         (clone-for [score scores]
+                    [:#lottery]
+                    (content (str (nth score 0)))
+                    [:#username]
+                    (content (nth score 1))
+                    [:#hand]
+                    (content (str (nth score 2)))
+                    [:#heart]
+                    (content (str (nth score 3)))
+                    [:#closed]
+                    (content (str (nth score 4)))))
+     [:.table])))
+
+(defpage "/users" []
+  (let [page (html-resource "scoreboard/views/_login.html")]
+    (main
+     page
+     [:.form-horizontal])))
+
+(defpage [:post "/users"] {:as user}
+  (let [u (person/find-by-name-and-password user)]
+    (if (not u)
+      (redirect "/users")
+      (do
+        (session/put! :user u)
+        (if (:is_admin u)
+          (do
+            (session/put! :role "admin")
+            (redirect "/players"))
+          (redirect "/scores"))))))
+
+(pre-route "/*" {}
+           (let [uri (:uri (request/ring-request))]
+             (if-not (or (= "/users" uri) (.startsWith uri "/assets") (session/get :user))
+               (redirect "/users"))))
 
 
-
+(defpage "/logout" []
+  (do
+    (session/remove! :user)
+    (session/remove! :role))
+  (redirect "/users"))

@@ -1,4 +1,4 @@
-create table users (id identity, name varchar(100), password varchar(50), primary key (id));
+create table users (id identity, name varchar(100), password varchar(50), is_admin boolean primary key (id));
 create table institutes (id identity, name varchar(100), primary key (id));
 create table players (id identity, name varchar(100), institute_id bigint,primary key (id),foreign key (institute_id) references institutes(id));
 

@@ -94,7 +94,8 @@ and p.institute_id = i.id and p.lottery = ?" player]
         (into (into (into [(:name player) (:institute player)]
                           (vec theory-score))
                     (vec practice-score))
-              (vec (list (+ (* 0.2 (nth theory-score 0))
+              (vec (list (+ (with-precision 2
+                              (* 0.2 (nth theory-score 0)))
                             (with-precision 2
                               (* 0.8
                                  (/ (reduce + practice-score) (count practice-score))))))))))))
@@ -104,3 +105,22 @@ and p.institute_id = i.id and p.lottery = ?" player]
         sorted (sort-by last > scores)]
     (for [i (range (count sorted))]
       (conj (nth sorted i) (str (inc i))))))
+
+(defn- select-practice-scores []
+  (sql/with-connection db
+    (sql/with-query-results rows
+      ["select p.lottery,p.name as player,pr.name as project, s.score from players p, scores s, projects pr
+where p.lottery = s.player_id
+and s.project_id = pr.id
+group by pr.name,p.lottery order by pr.id,p.lottery"] (into [] rows))))
+
+(defn get-practice-project-score []
+  (let [players (player/all-players)
+        projects (filter #(not (= "临床案例分析" (:name %))) (project/all))
+        scores (select-practice-scores)]
+    (for [player players]
+      (let [player-scores (filter #(= (:lottery player) (:lottery %)) scores)
+            result [(:lottery player) (:name player)]]
+        (into result (for [project projects]
+                       (let [score (filter #(= (:name project) (:project %)) player-scores)]
+                         (if (seq score) (:score (nth score 0)) 0))))))))
