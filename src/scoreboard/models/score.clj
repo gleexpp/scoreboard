@@ -84,13 +84,6 @@ and p.institute_id = i.id and p.lottery = ?" player]
       [0 0 0 0]
       (vec scores))))
 
-
-(defn get-player-rank []
-  (let [scores (get-player-final-scores)
-        sorted (sort-by last > scores)]
-    (for [i (range (count sorted))]
-      (conj (nth sorted i) (str (inc i))))))
-
 (defn get-player-final-scores []
   (let [players (player/all-players)
         projects (project/all)]
@@ -105,3 +98,9 @@ and p.institute_id = i.id and p.lottery = ?" player]
                             (with-precision 2
                               (* 0.8
                                  (/ (reduce + practice-score) (count practice-score))))))))))))
+
+(defn get-player-rank []
+  (let [scores (get-player-final-scores)
+        sorted (sort-by last > scores)]
+    (for [i (range (count sorted))]
+      (conj (nth sorted i) (str (inc i))))))
