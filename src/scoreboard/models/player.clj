@@ -29,4 +29,4 @@
     (sql/update-values
      :players
      ["lottery=?" (:id player)]
-     {:name (:username player) :institute_id (:college player)})))
+     {:name (:username player) :institute_id (:college player) :directed_by (:director player)})))

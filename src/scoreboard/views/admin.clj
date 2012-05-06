@@ -55,24 +55,43 @@
 (defpage "/players" []
   (let [players (player/all-players)
         page (html-resource "scoreboard/views/_players.html")]
-    (main
-     (at page
-         [:tbody :tr]
-         (clone-for [player players]
-                    [:.lottery :a]
-                    (do->
-                     (content (str (:lottery player)))
-                     (set-attr :href (if (not (= (session/get :role) "admin"))
-                                       (str "/players/" (:lottery player) "/scores/new")
-                                       (str "/players/" (:lottery player))
-                                       )))
-                    [:.username]
-                    (content (:name player))
-                    [:.college]
-                    (content (:institute player))
-                    [:.director]
-                    (content (:director player)))
-         ) [:.table])))
+    (if (= (session/get :role) "admin")
+      (main
+       (at page
+           [:tbody :tr]
+           (clone-for [player players]
+                      [:.lottery :a]
+                      (do->
+                       (content (str (:lottery player)))
+                       (set-attr :href (if (not (= (session/get :role) "admin"))
+                                         (str "/players/" (:lottery player) "/scores/new")
+                                         (str "/players/" (:lottery player))
+                                         )))
+                      [:.username]
+                      (content (:name player))
+                      [:.college]
+                      (content (:institute player))
+                      [:.director]
+                      (content (:director player)))
+           ) [:.table])
+      (mark
+       (at page
+           [:tbody :tr]
+           (clone-for [player players]
+                      [:.lottery :a]
+                      (do->
+                       (content (str (:lottery player)))
+                       (set-attr :href (if (not (= (session/get :role) "admin"))
+                                         (str "/players/" (:lottery player) "/scores/new")
+                                         (str "/players/" (:lottery player))
+                                         )))
+                      [:.username]
+                      (content (:name player))
+                      [:.college]
+                      (content (:institute player))
+                      [:.director]
+                      (content (:director player)))
+           ) [:.table]))))
 
 (defpage [:put "/players/:id"] {:keys [id] :as entity}
   (info entity)
@@ -103,6 +122,9 @@
 
          [:#seq]
          (set-attr :value (:lottery pl))
+
+         [:#director]
+         (set-attr :value (:directed_by pl))
 
          [:#username]
          (set-attr :value (:name pl))
@@ -140,7 +162,9 @@
                     (content (get score (- (count score) 2)))
                     [:#rank]
                     (content (last score))
-                    ))
+                    )
+         [(root)]
+         )        
      [:.table])))
 
 (defpage "/ranks/players" []
@@ -179,8 +203,33 @@
      [:.table])))
 
 (defpage "/awards" []
-  (let [page (html-resource "scoreboard/views/_awards.html")]
-    (main page [:.table])))
+  (let [page (html-resource "scoreboard/views/_awards.html")
+        scores (score/get-total-ranks)]
+    (main
+     (at page
+         [:#awards]
+         (clone-for [score scores]
+                    [:#username]
+                    (content (nth score 0))
+                    [:#college ]
+                    (content (nth score 1))
+                    [:#theory-score]
+                    (content (str (nth score 2)))
+                    [:#theory-rank]
+                    (content (nth score 3))
+                    [:#hand-score]
+                    (content (str (nth score 4)))
+                    [:#hand-rank]
+                    (content (nth score 5))
+                    [:#heart-score]
+                    (content (str (nth score 6)))
+                    [:#heart-rank]
+                    (content (nth score 7))
+                    [:#closed-score]
+                    (content (str (nth score 8)))
+                    [:#closed-rank]
+                    (content (nth score 9))))
+     [:.table])))
 
 (defpage "/scores" []
   (let [page (html-resource "scoreboard/views/_scores.html")

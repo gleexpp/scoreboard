@@ -56,7 +56,7 @@
                                                         </li>
                                                         <li>
                                                           <a href="/awards">
-                                                          获奖情况</a>
+                                                          单项排名</a>
                                                         </li>
                                                         <li>
                                                           <a href="/scores">
@@ -81,8 +81,19 @@
 		<!-- /container -->
 		<!-- Le javascript
 		================================================== -->
+         	<script src="../assets/js/jquery-1.7.2.min.js"></script>
+                <script type="text/javascript">
+                  $(document).ready(function() {
+                      $('li > a').click(function() {
+                        $('.active').removeClass('active');
+                        $(this).parent().addClass('active');
+                      });
+                      var path = window.location.pathname;
+                      $('.active').removeClass('active');
+                      $('a[href="' + path + '"]').parent().addClass('active');
+                  });
+                </script>
 		<!-- Placed at the end of the document so the pages load faster 
-		<script src="../assets/js/jquery.js"></script>
 		<script src="../assets/js/bootstrap-transition.js"></script>
 		<script src="../assets/js/bootstrap-alert.js"></script>
 		<script src="../assets/js/bootstrap-modal.js"></script>

@@ -124,3 +124,39 @@ group by pr.name,p.lottery order by pr.id,p.lottery"] (into [] rows))))
         (into result (for [project projects]
                        (let [score (filter #(= (:name project) (:project %)) player-scores)]
                          (if (seq score) (:score (nth score 0)) 0))))))))
+
+(defn get-final-project-scores []
+  (let [sql "(select p.name,i.name as institute,pr.name as project,score from
+ (select player_id,project_id,sum(s.score) / count(s.score) as score from scores s group by project_id,player_id), 
+ players p,projects pr,institutes i
+ where p.lottery = player_id and project_id = pr.id and p.institute_id = i.id)"]
+    (sql/with-connection db
+      (sql/with-query-results rows
+        [sql]
+        (into [] rows)))))
+
+(defn get-final-rank []
+  (let [players (player/all-players)
+        projects (project/all)
+        scores (get-final-project-scores)]
+    (for [player players]
+      (let [player-scores (filter #(= (:name player) (:name %)) scores)
+            result [(:name player) (:institute player)]]
+        (into result (for [project projects]
+                       (let [score (filter #(= (:name project) (:project %)) player-scores)]
+                         (if (seq score) (:score (nth score 0)) 0))))))))
+
+(defn do-internal-sort [scores pos]
+  (let [sorted (vec (sort-by #(nth % pos) > scores))]
+    (for [i (range (count sorted))]
+      (into (into (into []
+                        (subvec (nth sorted i) 0 (inc pos)))
+                  [(str (inc i))])
+            (subvec (nth sorted i) (inc pos))))))
+
+(defn get-total-ranks []
+  (let [scores (get-final-rank)]
+    (do-internal-sort (do-internal-sort (do-internal-sort (do-internal-sort scores 2)
+                                        4)
+                                        6)
+                      8)))
