@@ -135,7 +135,7 @@
 
 (defpage "/ranks" []
   (let [page (html-resource "scoreboard/views/_rank.html")
-        scores (score/rank)]
+        scores (score/get-institute-final-score)]
     (main
      (at page
          [:#scores]
@@ -143,29 +143,19 @@
                     [:#college]
                     (content (get score 0))
                     [:#pr1]
-                    (if (> (count score) 2)
-                      (content (get score 1))
-                      (content "0"))
+                    (content (str (get score 1)))
                     [:#pr2]
-                    (if (> (count score) 3)
-                      (content (get score 2))
-                      (content "0"))
+                    (content (str (get score 2)))
                     [:#pr3]
-                    (if (> (count score) 4)
-                      (content (nth score 3))
-                      (content "0"))
+                    (content (str (get score 3)))
                     [:#pr4]
-                    (if (> (count score) 5)
-                      (content (nth score 4))
-                      (content "0"))
+                    (content (str (get score 4)))
                     [:#total]
-                    (content (get score (- (count score) 2)))
+                    (content (str (get score 5)))
                     [:#rank]
-                    (content (last score))
-                    )
-         [(root)]
-         )        
-     [:.table])))
+                    (content (get score 6))
+                    ))
+     [:.table]))) 
 
 (defpage "/ranks/players" []
   (let [page (html-resource "scoreboard/views/_prank.html")
