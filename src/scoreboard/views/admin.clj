@@ -82,7 +82,7 @@
                       (do->
                        (content (str (:lottery player)))
                        (set-attr :href (if (not (= (session/get :role) "admin"))
-                                         (str "/players/" (:lottery player) "/scores/new")
+                                         (str "/players/" (:lottery player) "/scores/new/1")
                                          (str "/players/" (:lottery player))
                                          )))
                       [:.username]

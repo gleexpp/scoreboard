@@ -14,11 +14,22 @@ where s.player_id = p.lottery
 and s.project_id = pr.id
 and p.institute_id = i.id order by p.lottery"] (into [] rows))))
 
+(defn find-project-score-by-referee
+  "根据选手号，项目id和评委id获得某项比赛的成绩"
+  [player project referee]
+  (sql/with-connection db
+    (sql/with-query-results rows
+      ["select project_id,score from scores where player_id = ? and project_id = ? and referee_id = ?" player project referee]
+      (into [] rows))))
+
 (defn save [score]
   (sql/with-connection db
-    (sql/insert-records
+    (sql/update-or-insert-values
      :scores
-     {:player_id (:seq score) :project_id (:project score) :score (:score score)})))
+     ["referee_id=? and player_id=? and project_id=?"
+      (:referee_id score) (:seq score) (:project score)]
+     {:player_id (:seq score) :project_id (:project score) :score (:score score)
+      :referee_id (:referee_id score)})))
 
 (defn get-single-total []
   (let [sql "select sum(s.score) as total_score,i.name as institute,pr.name as project,pr.id as project_id

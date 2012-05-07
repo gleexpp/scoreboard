@@ -64,6 +64,29 @@
     <!-- /container -->
     <!-- Le javascript
 	 ================================================== -->
+    <script src="/assets/js/jquery-1.7.2.min.js"></script>
+    <script type="text/javascript">
+      $(document).ready(function() {
+      $('#project').change(function() {
+        var seq = $('#seq').val();
+        var project = $(this).val();
+        window.location.href="/players/" + seq + "/scores/new/" + project;
+      });
+      var loc = window.location.pathname;
+      var ptn = /players\/\d+\/scores\/new\/(\d+)/;
+      if(ptn.test(loc)) {
+        var prj = ptn.exec(loc)[1];
+        $('#project').val(prj);
+      }
+      $('li > a').click(function() {
+        $('.active').removeClass('active');
+        $(this).parent().addClass('active');
+        });
+        var path = window.location.pathname;
+        $('.active').removeClass('active');
+        $('a[href="' + path + '"]').parent().addClass('active');
+        });
+    </script>
     <!-- Placed at the end of the document so the pages load faster 
 	 <script src="../assets/js/jquery.js"></script>
 	 <script src="../assets/js/bootstrap-transition.js"></script>
