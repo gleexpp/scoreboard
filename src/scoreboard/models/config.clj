@@ -7,4 +7,4 @@
    :subprotocol "h2"
    :user        "scoreboard"
    :password    "scoreboard"
-   :subname     "tcp://localhost/scoreboard"})
+   :subname     "tcp://localhost/~/scoreboard"})

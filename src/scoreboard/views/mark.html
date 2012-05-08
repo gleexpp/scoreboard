@@ -78,6 +78,13 @@
         var prj = ptn.exec(loc)[1];
         $('#project').val(prj);
       }
+      $('#commit-player-score-btn').click(function() {
+        var score = $('#score').val();
+        if(isNaN(Number(score)) | score < 0 | score > 100) {
+          alert('输入的成绩不合法！');
+          return false;
+        }
+      });
       $('li > a').click(function() {
         $('.active').removeClass('active');
         $(this).parent().addClass('active');

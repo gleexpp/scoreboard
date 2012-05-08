@@ -94,7 +94,6 @@
            ) [:.table]))))
 
 (defpage [:put "/players/:id"] {:keys [id] :as entity}
-  (info entity)
   (player/update entity)
   (redirect (str "/players/" id)))
 
@@ -135,7 +134,7 @@
 
 (defpage "/ranks" []
   (let [page (html-resource "scoreboard/views/_rank.html")
-        scores (score/get-institute-final-score)]
+        scores (score/get-institute-final-rank)]
     (main
      (at page
          [:#scores]
@@ -159,31 +158,33 @@
 
 (defpage "/ranks/players" []
   (let [page (html-resource "scoreboard/views/_prank.html")
-        scores (score/get-player-rank)
-        ]
+        scores (score/get-player-rank)]
     (main
      (at page
          [:#scores]
          (clone-for [score scores]
+                    [:#lottery]
+                    (content (str (get score 0)))
+                    
                     [:#username]
-                    (content (get score 0))
-                    [:#college]
                     (content (get score 1))
+                    [:#college]
+                    (content (get score 2))
                     [:#pr1]
-                    (if (> (count score) 3)
-                      (content (str (get score 2)))
-                      (content "0"))
-                    [:#pr2]
                     (if (> (count score) 4)
                       (content (str (get score 3)))
                       (content "0"))
-                    [:#pr3]
+                    [:#pr2]
                     (if (> (count score) 5)
                       (content (str (get score 4)))
                       (content "0"))
-                    [:#pr4]
+                    [:#pr3]
                     (if (> (count score) 6)
                       (content (str (get score 5)))
+                      (content "0"))
+                    [:#pr4]
+                    (if (> (count score) 7)
+                      (content (str (get score 6)))
                       (content "0"))
                     [:#total]
                     (content (str (get score (- (count score) 2))))
@@ -199,6 +200,8 @@
      (at page
          [:#awards]
          (clone-for [score scores]
+                    [:#lottery]
+                    (content (str (nth score 10)))
                     [:#username]
                     (content (nth score 0))
                     [:#college ]

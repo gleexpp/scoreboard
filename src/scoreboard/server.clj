@@ -9,7 +9,6 @@
         port (Integer. (get (System/getenv) "PORT" "8080"))
         db (. Server createTcpServer (seq ""))]
     (do
-      (.start db)
       (server/start port {:mode mode
                           :ns 'scoreboard}))))
 
